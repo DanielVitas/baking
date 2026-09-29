@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recipes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #ffffff;
+  --ink: #17191e;
+  --muted: #6d717c;
+  --rule: #e6e7ea;
+  --tile: #eef0ee;
+  --tile-ink: #b5bab4;
+  --accent: #1f5c45;
+  --oven: #b0402a;
+  --font: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131416; --ink: #eceef1; --muted: #9a9fa9; --rule: #2a2d32;
+    --tile: #1f2226; --tile-ink: #4a5057; --accent: #7cc3a3; --oven: #f0907a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #131416; --ink: #eceef1; --muted: #9a9fa9; --rule: #2a2d32;
+  --tile: #1f2226; --tile-ink: #4a5057; --accent: #7cc3a3; --oven: #f0907a;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 400 1.0625rem/1.6 var(--font);
+  font-variant-numeric: tabular-nums;
+}
+a { color: inherit; text-decoration: none; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+.wrap { max-width: 68rem; margin: 0 auto; padding-inline: 16px; padding-block: 2.5rem 4rem; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+
+/* Menu */
+.brand { font: 700 clamp(2rem, 5vw, 2.75rem)/1 var(--font); letter-spacing: -0.035em; margin: 0 0 2.5rem; }
+.category { margin-bottom: 2.75rem; }
+.category h2 { font: 500 0.95rem/1 var(--font); color: var(--muted); margin: 0 0 1rem; }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem 1rem; }
+@media (min-width: 40rem) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem 1.5rem; } }
+@media (min-width: 64rem) { .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.card { display: grid; gap: 0.6rem; }
+.card:hover .name { color: var(--accent); }
+.photo {
+  position: relative; display: grid; place-items: center; overflow: hidden;
+  aspect-ratio: 4 / 3; border-radius: 8px; background: var(--tile);
+}
+.photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.photo .initial { font: 700 2.5rem/1 var(--font); color: var(--tile-ink); }
+.name { font: 500 1.05rem/1.3 var(--font); letter-spacing: -0.01em; }
+.empty { color: var(--muted); }
+
+/* Recipe */
+.back { display: inline-block; color: var(--muted); font-size: 0.95rem; margin-bottom: 1.25rem; }
+.back:hover { color: var(--ink); }
+.head { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2.25rem; }
+.thumb { flex: none; width: clamp(6.5rem, 22vw, 12rem); aspect-ratio: 4 / 3; border-radius: 10px; }
+.thumb .initial { display: none; }
+.recipe h1 { font: 700 clamp(1.8rem, 5vw, 3rem)/1.05 var(--font); letter-spacing: -0.035em; margin: 0; text-wrap: balance; }
+.recipe h2 { font: 700 1.1rem/1 var(--font); margin: 0 0 0.9rem; }
+.ingredients { margin-bottom: 2.5rem; }
+.ing-groups { display: grid; gap: 1.5rem 3rem; }
+.ing-group h3 { font: 500 0.95rem/1 var(--font); color: var(--muted); margin: 0 0 0.6rem; }
+.ingredients li.item { display: grid; grid-template-columns: 5.5rem 1fr; gap: 0.75rem; padding: 0.55rem 0; border-top: 1px solid var(--rule); }
+.ingredients li.item:last-child { border-bottom: 1px solid var(--rule); }
+.amt { font-weight: 700; white-space: nowrap; }
+.note { color: var(--muted); }
+.steps { max-width: 40rem; }
+.steps li.group { font: 500 0.95rem/1 var(--font); color: var(--muted); padding: 1.25rem 0 0.6rem; }
+.steps li.group:first-child { padding-top: 0.25rem; }
+.steps ol { counter-reset: s; display: grid; gap: 1rem; }
+.steps li.step { counter-increment: s; display: grid; grid-template-columns: 2rem 1fr; }
+.steps strong { font-weight: 700; color: var(--accent); }
+.steps .oven { font-weight: 700; color: var(--oven); white-space: nowrap; }
+.steps li.step::before { content: counter(s); font-weight: 700; color: var(--accent); }
+.single .ingredients { max-width: 26rem; }
+@media (min-width: 44rem) {
+  .grouped .ing-groups { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 52rem; }
+}
+@media (min-width: 60rem) {
+  /* one ingredient list: ingredients and steps side by side */
+  .single .cols { display: grid; grid-template-columns: minmax(16rem, 20rem) minmax(0, 36rem); gap: 4rem; align-items: start; }
+  .single .ingredients { margin-bottom: 0; }
+}
+
+.source { margin: 3rem 0 0; color: var(--muted); font-size: 0.95rem; }
+.source a { color: var(--accent); text-decoration: underline; text-underline-offset: 0.2em; }
+footer.site { margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.9rem; }
+footer.site:empty { display: none; }
+
+@media print {
+  .back, footer.site { display: none !important; }
+  .hero { max-height: 8cm; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <main id="app"></main>
+  <footer class="site" id="footer"></footer>
+</div>
+
+<script src="recipes.js"></script>
+<script>
+(function () {
+  "use strict";
+  var SITE = window.SITE || { title: "Recipes", homepage: "" };
+  var RECIPES = (window.RECIPES || []).slice();
+  var app = document.getElementById("app");
+  if (SITE.homepage) document.getElementById("footer").innerHTML = '<a href="' + esc(SITE.homepage) + '">Home page</a>';
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  /* ---------- amounts ---------- */
+  var FRACS = [[0, ""], [0.125, "⅛"], [0.25, "¼"], [1 / 3, "⅓"], [0.5, "½"], [2 / 3, "⅔"], [0.75, "¾"], [1, ""]];
+  function fraction(x) {
+    var whole = Math.floor(x), rest = x - whole, best = FRACS[0];
+    FRACS.forEach(function (f) { if (Math.abs(f[0] - rest) < Math.abs(best[0] - rest)) best = f; });
+    if (best[0] === 1) { whole += 1; best = FRACS[0]; }
+    return ((whole ? whole : "") + best[1]) || "0";
+  }
+  function formatAmount(amount, unit) {
+    var u = (unit || "").toLowerCase();
+    if (u === "g" || u === "ml") return String(Math.round(amount * 10) / 10).replace(".", ",");
+    if (u === "" || u === "tsp" || u === "tbsp" || u === "pinch") return fraction(amount);
+    return String(Math.round(amount * 100) / 100).replace(".", ",");
+  }
+
+  /* photo, or a plain tile with the first letter when there is none (or it fails to load) */
+  function photo(r, cls) {
+    return '<span class="photo' + (cls ? " " + cls : "") + '"><span class="initial" aria-hidden="true">' + esc(r.title.charAt(0)) + '</span>' +
+      (r.image ? '<img src="' + esc(r.image) + '" alt="" loading="lazy" onerror="this.remove()">' : "") + '</span>';
+  }
+
+  /* ---------- menu ---------- */
+  function renderIndex() {
+    document.title = SITE.title || "Recipes";
+    var html = '<h1 class="brand">' + esc(SITE.title || "Recipes") + '</h1>';
+    if (!RECIPES.length) html += '<p class="empty">No recipes yet. Add one to recipes.js and reload.</p>';
+    html += '<ul class="grid">';
+    RECIPES.slice().sort(function (a, b) { return a.title.localeCompare(b.title, "sl"); }).forEach(function (r) {
+      html += '<li><a class="card" href="#' + encodeURIComponent(r.id) + '">' + photo(r) +
+        '<span class="name">' + esc(r.title) + '</span></a></li>';
+    });
+    html += '</ul>';
+    app.innerHTML = html;
+  }
+
+  /* ---------- recipe ---------- */
+  function renderRecipe(r) {
+    document.title = r.title + " · " + (SITE.title || "Recipes");
+    // split the ingredient list into groups at "# Heading" lines
+    var groups = [], cur = null;
+    (r.ingredients || []).forEach(function (it) {
+      if (typeof it === "string") { cur = { title: it.replace(/^#\s*/, ""), items: [] }; groups.push(cur); return; }
+      if (!cur) { cur = { title: "", items: [] }; groups.push(cur); }
+      cur.items.push(it);
+    });
+    var grouped = groups.length > 1;
+    var html = '<article class="recipe ' + (grouped ? "grouped" : "single") + '"><a class="back" href="#index">← All recipes</a>' +
+      '<div class="head">' + (r.image ? photo(r, "thumb") : "") + '<h1>' + esc(r.title) + '</h1></div>' +
+      '<div class="cols"><section class="ingredients"><h2>Ingredients</h2><div class="ing-groups">';
+    groups.forEach(function (g) {
+      html += '<div class="ing-group">' + (grouped && g.title ? '<h3>' + esc(g.title) + '</h3>' : "") + '<ul>';
+      g.items.forEach(function (it) {
+        var amt = it.amount == null ? "" : formatAmount(it.amount, it.unit) + (it.unit ? " " + it.unit : "");
+        html += '<li class="item"><span class="amt">' + esc(amt) + '</span>' +
+          '<span>' + esc(it.name) + (it.note ? ' <span class="note">' + esc(it.note) + '</span>' : "") + '</span></li>';
+      });
+      html += '</ul></div>';
+    });
+    html += '</div>';
+    html += '</ul></section><section class="steps"><h2>Steps</h2><ol>';
+    (r.steps || []).forEach(function (s) {
+      if (/^#/.test(s)) html += '<li class="group">' + esc(s.replace(/^#\s*/, "")) + '</li>';
+      else html += '<li class="step"><span>' + esc(s).replace(/\*([^*]+)\*/g, "<strong>$1</strong>").replace(/\{([^}]+)\}/g, '<span class="oven">$1</span>') + '</span></li>';
+    });
+    html += '</ol></section></div>';
+    if (r.source && r.source.url) {
+      var label = r.source.name;
+      if (!label) { try { label = new URL(r.source.url).hostname.replace(/^www\./, ""); } catch (e) { label = r.source.url; } }
+      html += '<p class="source">Source: <a href="' + esc(r.source.url) + '" target="_blank" rel="noopener">' + esc(label) + '</a></p>';
+    }
+    html += '</article>';
+    app.innerHTML = html;
+    window.scrollTo(0, 0);
+  }
+
+  /* ---------- routing ---------- */
+  function route(hash) {
+    var id = decodeURIComponent((typeof hash === "string" ? hash : location.hash).replace(/^#/, ""));
+    if (id && id !== "index") {
+      var r = RECIPES.filter(function (x) { return x.id === id; })[0];
+      if (r) return renderRecipe(r);
+      app.innerHTML = '<p class="empty">No recipe with id “' + esc(id) + '”. Check the id in recipes.js, or go back to <a href="#index">all recipes</a>.</p>';
+      return;
+    }
+    renderIndex();
+  }
+  // Render in-page on click; update the address when the host allows it (back button, shareable links).
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest('a[href^="#"]');
+    if (!a) return;
+    e.preventDefault();
+    var h = a.getAttribute("href");
+    try { history.pushState(null, "", h); } catch (err) {}
+    route(h);
+  });
+  window.addEventListener("popstate", function () { route(); });
+  window.addEventListener("hashchange", function () { route(); });
+  route();
+})();
+</script>
+</body>
+</html>
